@@ -1,0 +1,62 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem.Models.LecturerClaim>
+
+
+
+<div class="container mt-5">
+    <h2 class="mb-4">📝 Verify Claims</h2>
+
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-info">@TempData["InfoMessage"]</div>
+    }
+
+    <table class="table table-bordered table-hover shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Description</th>
+                <th>Amount</th>
+                <th>Status</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            
+            
+           
+                @foreach (var claim in Model)
+                {
+                    <tr>
+                        <td>@claim.ClaimId</td>
+                        <td>@claim.Description</td>
+                        <td>@claim.Total.ToString("C")</td>
+                        <td>
+                            <span class="badge bg-secondary">@claim.Status</span>
+                        </td>
+                        <td>
+                            <form asp-action="ApproveClaim" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@claim.ClaimId" />
+                                <button type="submit" class="btn btn-sm btn-success">✔ Approve</button>
+                            </form>
+
+                            <form asp-action="RejectClaim" method="post" class="d-inline">
+                                @Html.AntiForgeryToken()
+                                <input type="hidden" name="id" value="@claim.ClaimId" />
+                                <button type="submit" class="btn btn-sm btn-danger">✖ Reject</button>
+                            </form>
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+</div>

@@ -1,0 +1,112 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem.Models.LecturerClaim>
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">📄 My Claims</h2>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info shadow-sm" role="alert">
+            You have no claims yet. Click <a href="@Url.Action("SubmitClaim", "Account")">here</a> to submit a new claim.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Total (R)</th>
+                        <th>Status</th>
+                        <th>Progress</th>
+                        <th>Document</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var c in Model)
+                    {
+                        <tr>
+                            <td>@c.ClaimId</td>
+                            <td>@c.Total.ToString("N2")</td>
+                            <td>
+                                @switch (c.Status)
+                                {
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Submitted:
+                                        <span class="badge bg-primary">@c.Status</span>
+                                        break;
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Verified:
+                                        <span class="badge bg-info text-dark">@c.Status</span>
+                                        break;
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Approved:
+                                        <span class="badge bg-success">@c.Status</span>
+                                        break;
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Rejected:
+                                        <span class="badge bg-danger">@c.Status</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@c.Status</span>
+                                        break;
+                                }
+                            </td>
+
+                            <td>
+                                @Html.Raw(c.GetProgressBarHtml())
+                            </td>
+
+                            <td>
+                                @if (!string.IsNullOrEmpty(c.LecturerDocumentPath))
+                                {
+                                    <a href="@c.LecturerDocumentPath" class="btn btn-sm btn-outline-primary" target="_blank">
+                                        📄 View
+                                    </a>
+                                }
+                                else
+                                {
+                                    <span class="text-muted">No document</span>
+                                }
+                            </td>
+
+                            <td>
+                                <a href="@Url.Action("EditClaim", "Account", new { id = c.ClaimId })" class="btn btn-sm btn-warning">
+                                    ✏️ Edit
+                                </a>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    .table th, .table td {
+        vertical-align: middle;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.45em 0.65em;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+        transition: background-color 0.2s;
+    }
+
+    .btn-outline-primary:hover {
+        color: #fff;
+        background-color: #0d6efd;
+        border-color: #0d6efd;
+    }
+</style>

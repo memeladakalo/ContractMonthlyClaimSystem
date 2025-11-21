@@ -1,0 +1,112 @@
+﻿@{
+    ViewData["Title"] = "Claim Submitted Successfully";
+    Layout = "_Layout";
+}
+
+<div class="container mt-5">
+    <div class="row justify-content-center">
+        <div class="col-md-8">
+            <div class="card shadow-lg border-0 rounded-4">
+                <div class="card-header bg-success text-white text-center py-3 rounded-top-4">
+                    <h3 class="mb-0">
+                        <i class="bi bi-check-circle-fill me-2"></i>
+                        Claim Submitted Successfully!
+                    </h3>
+                </div>
+
+                <div class="card-body text-center bg-light">
+                    <p class="lead text-secondary mt-3">
+                        Thank you, <strong class="text-primary">@TempData["LecturerName"]</strong>!
+                    </p>
+
+                    <p class="text-muted">Your claim and supporting document have been submitted for review.</p>
+
+                    <div class="table-responsive mt-4">
+                        <table class="table table-bordered table-striped mx-auto" style="max-width: 500px;">
+                            <tbody>
+                                <tr>
+                                    <th class="bg-light text-end" style="width: 50%;">Lecturer Name:</th>
+                                    <td class="text-start">@TempData["LecturerName"]</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-end">Total Hours:</th>
+                                    <td class="text-start">@TempData["HoursWorked"]</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-end">Hourly Rate:</th>
+                                    <td class="text-start">R @TempData["HourlyRate"]</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-end">Total Amount:</th>
+                                    <td class="text-start fw-bold text-success">R @TempData["TotalAmount"]</td>
+                                </tr>
+                                <tr>
+                                    <th class="bg-light text-end">Uploaded Document:</th>
+                                    <td class="text-start">
+                                        @if (TempData["FileName"] != null)
+                                        {
+                                            <span class="text-success fw-semibold">
+                                                <i class="bi bi-file-earmark-text me-1"></i> @TempData["FileName"]
+                                            </span>
+                                        }
+                                        else
+                                        {
+                                            <span class="text-muted fst-italic">No document uploaded</span>
+                                        }
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="mt-4">
+                        <a asp-controller="Lecturers" asp-action="Submit" class="btn btn-primary me-2">
+                            <i class="bi bi-plus-circle me-1"></i> Submit Another Claim
+                        </a>
+                        <a asp-controller="Home" asp-action="Index" class="btn btn-outline-secondary">
+                            <i class="bi bi-house-door me-1"></i> Back to Dashboard
+                        </a>
+                    </div>
+                </div>
+
+                <div class="card-footer bg-light text-center py-3">
+                    <small class="text-muted">
+                        Submitted on @DateTime.Now.ToString("dddd, dd MMMM yyyy HH:mm")
+                    </small>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Styles {
+    <style>
+        .card {
+            animation: fadeIn 1.2s ease-in-out;
+        }
+
+        @@keyframes fadeIn {
+            from
+
+        {
+            opacity: 0;
+            transform: translateY(15px);
+        }
+
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #0d6efd, #0b5ed7);
+            border: none;
+        }
+
+            .btn-primary:hover {
+                background: linear-gradient(135deg, #0a58ca, #084298);
+            }
+    </style>
+}

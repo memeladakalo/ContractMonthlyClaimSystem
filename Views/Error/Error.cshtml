@@ -1,0 +1,63 @@
+﻿@model ContractMonthlyClaimSystem.Models.ErrorViewModel
+
+<div class="container mt-5">
+    <div class="card border-danger shadow-sm rounded">
+        <div class="card-header bg-danger text-white">
+            <h3 class="mb-0">⚠️ Oops! Something went wrong</h3>
+        </div>
+        <div class="card-body">
+            <p class="lead">
+                <strong>Error:</strong> @Model.ErrorMessage
+            </p>
+
+            @if (!string.IsNullOrEmpty(Model.ErrorDetails))
+            {
+                <div class="alert alert-warning">
+                    <strong>Details:</strong> @Model.ErrorDetails
+                </div>
+            }
+
+            <hr />
+
+            <p class="text-muted mb-2">
+                <strong>Request ID:</strong> @Model.RequestId <br />
+                <strong>Time:</strong> @Model.ErrorTime.ToLocalTime()
+            </p>
+
+            <div class="mt-4">
+                <a href="@Url.Action("Index", "Home")" class="btn btn-primary mr-2">
+                    🏠 Go to Home
+                </a>
+                <a href="javascript:history.back()" class="btn btn-secondary">
+                    🔙 Go Back
+                </a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    .card-header h3 {
+        font-weight: 600;
+        font-size: 1.5rem;
+    }
+
+    .card-body .lead {
+        font-size: 1.2rem;
+    }
+
+    .alert-warning {
+        font-size: 0.95rem;
+        background-color: #fff3cd;
+        border-color: #ffeeba;
+    }
+
+    .btn {
+        min-width: 130px;
+    }
+</style>

@@ -1,0 +1,108 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem.Models.LecturerClaim>
+
+@{
+    ViewData["Title"] = "Manager Dashboard";
+}
+
+<div class="container mt-5">
+    <h2 class="mb-4 text-primary">🛠 Manager Dashboard</h2>
+    <p class="mb-4">
+        Review lecturer claims below and approve or reject them accordingly.
+    </p>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info shadow-sm" role="alert">
+            There are no claims to review at the moment.
+        </div>
+    }
+    else
+    {
+        <div class="table-responsive shadow-sm">
+            <table class="table table-hover table-bordered align-middle">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Claim ID</th>
+                        <th>Lecturer</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var claim in Model)
+                    {
+                        <tr>
+                            <td>@claim.ClaimId</td>
+                            <td>@claim.LecturerName</td>
+                            <td>@claim.DateSubmitted.ToShortDateString()</td>
+                            <td>
+                                @switch (claim.Status)
+                                {
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Submitted:
+                                        <span class="badge bg-primary">@claim.Status</span>
+                                        break;
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Verified:
+                                        <span class="badge bg-info text-dark">@claim.Status</span>
+                                        break;
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Approved:
+                                        <span class="badge bg-success">@claim.Status</span>
+                                        break;
+                                    case ContractMonthlyClaimSystem.Models.ClaimStatus.Rejected:
+                                        <span class="badge bg-danger">@claim.Status</span>
+                                        break;
+                                    default:
+                                        <span class="badge bg-secondary">@claim.Status</span>
+                                        break;
+                                }
+                            </td>
+                            <td>
+                                <form asp-action="Approve" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@claim.ClaimId" />
+                                    <button type="submit" class="btn btn-success btn-sm me-1">
+                                        ✅ Approve
+                                    </button>
+                                </form>
+                                <form asp-action="Reject" method="post" class="d-inline">
+                                    <input type="hidden" name="id" value="@claim.ClaimId" />
+                                    <button type="submit" class="btn btn-danger btn-sm">
+                                        ❌ Reject
+                                    </button>
+                                </form>
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    }
+</div>
+
+<style>
+    body {
+        background-color: #f8f9fa;
+        font-family: "Segoe UI", sans-serif;
+    }
+
+    h2 {
+        font-weight: 600;
+    }
+
+    .badge {
+        font-size: 0.9rem;
+        padding: 0.45em 0.65em;
+    }
+
+    .table-hover tbody tr:hover {
+        background-color: #f1f1f1;
+        transition: background-color 0.2s;
+    }
+
+    .btn-sm {
+        min-width: 90px;
+    }
+
+        .btn-sm.me-1 {
+            margin-right: 0.3rem;
+        }
+</style>

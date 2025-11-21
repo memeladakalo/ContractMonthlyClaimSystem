@@ -1,0 +1,81 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem.Models.LecturerClaim>
+
+@{
+    ViewData["Title"] = "Verify Lecturer Claims";
+}
+
+<div class="container mt-5">
+    <div class="text-center mb-4">
+        <h2 class="fw-bold text-primary">Verify & Approve Lecturer Claims</h2>
+        <p class="text-muted">Programme Coordinators and Academic Managers can review all submitted claims here.</p>
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="alert alert-info text-center">
+            🎉 No pending claims at the moment.
+        </div>
+    }
+    else
+    {
+        <div class="card shadow-lg rounded-4 border-0">
+            <div class="table-responsive">
+                <table class="table table-hover table-bordered shadow-sm">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>Claim ID</th>
+                            <th>Lecturer Name</th>
+                            <th>Date Submitted</th>
+                            <th>Hours Worked</th>
+                            <th>Hourly Rate</th>
+                            <th>Total Amount (R)</th>
+                            <th>Notes</th>
+                            <th>Lecturer Document</th>
+                            <th>Action</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var claim in Model)
+                        {
+                            <tr>
+                                <td>@claim.ClaimId</td>
+                                <td>@claim.LecturerName</td>
+                                <td>@claim.DateSubmitted.ToString("dd MMM yyyy")</td>
+                                <td>@claim.HoursWorked</td>
+                                <td>R @claim.HourlyRate</td>
+                                <td class="fw-bold text-success">R @(claim.HoursWorked* claim.HourlyRate)</td>
+                                <td>@claim.Notes</td>
+                                <td>
+                                    @if (!string.IsNullOrEmpty(claim.LecturerDocumentPath))
+                                    {
+                                        <a href="@claim.LecturerDocumentPath" target="_blank" class="btn btn-outline-secondary btn-sm">
+                                            View File
+                                        </a>
+                                    }
+                                    else
+                                    {
+                                        <span class="text-muted">N/A</span>
+                                    }
+                                </td>
+                                <td>
+                                    <form asp-action="VerifyClaimAction" method="post" class="d-inline">
+                                        <input type="hidden" name="id" value="@claim.ClaimId" />
+                                        <button type="submit" name="actionType" value="approve" class="btn btn-success btn-sm">
+                                            Approve
+                                        </button>
+                                    </form>
+                                    <form asp-action="VerifyClaimAction" method="post" class="d-inline ms-1">
+                                        <input type="hidden" name="id" value="@claim.ClaimId" />
+                                        <button type="submit" name="actionType" value="reject" class="btn btn-danger btn-sm">
+                                            Reject
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    }
+</div>

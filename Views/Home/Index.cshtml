@@ -1,0 +1,80 @@
+﻿@{
+    ViewData["Title"] = "Home";
+}
+
+<div class="container mt-5">
+    <!-- Welcome Section -->
+    <div class="text-center mb-5">
+        <h1 class="display-4">Welcome to the Contract Monthly Claim System</h1>
+        <p class="lead">
+            Submit, verify, and manage lecturer claims easily and efficiently.
+        </p>
+        <hr class="my-4" />
+    </div>
+
+    <!-- Features / Actions -->
+    <div class="row text-center">
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Lecturer</h4>
+                    <p class="card-text">
+                        Submit your monthly claims quickly and attach supporting documents.
+                    </p>
+                    <a href="@Url.Action("SubmitClaim", "Account")" class="btn btn-primary">Submit Claim</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Coordinator</h4>
+                    <p class="card-text">
+                        Review and verify claims submitted by lecturers for accuracy and completeness.
+                    </p>
+                    <a href="@Url.Action("ClaimList", "Lecturers")" class="btn btn-success">Verify Claims</a>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-4 mb-4">
+            <div class="card shadow-sm h-100">
+                <div class="card-body">
+                    <h4 class="card-title">Manager</h4>
+                    <p class="card-text">
+                        Approve or reject claims and monitor overall claim status.
+                    </p>
+                    <a href="@Url.Action("Dashboard", "HR")" class="btn btn-warning">Manage Claims</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer / Info -->
+    <div class="mt-5 text-center">
+        <p class="text-muted">
+            This system is designed to simplify the claims process for all users.
+            Ensure your details are up-to-date for smooth processing.
+        </p>
+    </div>
+</div>
+
+<!-- Optional: add some custom CSS for better look -->
+<style>
+    body {
+        background-color: #f8f9fa;
+    }
+
+    .card {
+        transition: transform 0.2s;
+    }
+
+        .card:hover {
+            transform: scale(1.05);
+        }
+
+    h1.display-4 {
+        color: #007bff;
+    }
+</style>

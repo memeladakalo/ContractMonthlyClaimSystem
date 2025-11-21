@@ -1,0 +1,158 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem.Models.LecturerClaim>
+
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<ApplicationUser> UserManager
+
+@{
+    ViewData["Title"] = "Verify Claims";
+    var user = UserManager.GetUserAsync(User).Result;
+    var roles = UserManager.GetRolesAsync(user).Result;
+}
+
+<div class="container mt-4">
+
+    <h2 class="mb-3">📝 Coordinator Claim Verification</h2>
+
+    <!-- Role-Based Navigation -->
+    <div class="mb-3 d-flex gap-2">
+        <a class="btn btn-outline-primary" href="@Url.Action("Index", "Lecturers")">Lecturer View</a>
+        <a class="btn btn-outline-warning" href="@Url.Action("VerifyClaims", "Coordinators")">Coordinator View</a>
+        @if (roles.Contains("Manager"))
+        {
+            <a class="btn btn-outline-success" href="@Url.Action("ReviewClaims", "Managers")">Manager View</a>
+        }
+    </div>
+
+    <!-- TempData Alerts -->
+    @if (TempData["SuccessMessage"] != null)
+    {
+        <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+    }
+    @if (TempData["ErrorMessage"] != null)
+    {
+        <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+    }
+    @if (TempData["InfoMessage"] != null)
+    {
+        <div class="alert alert-warning">@TempData["InfoMessage"]</div>
+    }
+
+    <!-- Filters -->
+    <div class="mb-3 d-flex gap-2">
+        <select id="statusFilter" class="form-select">
+            <option value="">All Statuses</option>
+            <option value="Submitted">Submitted</option>
+            <option value="Verified">Verified</option>
+            <option value="Approved">Approved</option>
+            <option value="Rejected">Rejected</option>
+        </select>
+        <input type="month" id="monthFilter" class="form-control" />
+    </div>
+
+    <!-- Claims Table -->
+    <table class="table table-hover table-bordered shadow-sm">
+        <thead class="table-dark">
+            <tr>
+                <th>Claim ID</th>
+                <th>Lecturer</th>
+                <th>Date</th>
+                <th>Hours</th>
+                <th>Total Amount</th>
+                <th>Status</th>
+                <th>Progress</th>
+                <th>Document</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody id="claimsTable">
+            @foreach (var c in Model)
+            {
+                <tr data-status="@c.Status" data-month="@c.DateSubmitted.ToString("yyyy-MM")">
+                    <td>@c.ClaimId</td>
+                    <td>@c.LecturerName</td>
+                    <td>@c.DateSubmitted.ToShortDateString()</td>
+                    <td>@c.HoursWorked</td>
+                    <td>R @c.Total</td>
+                    <td>
+                        <span class="badge
+                                @(c.Status == ClaimStatus.Submitted ? "bg-warning text-dark" :
+                                                            c.Status == ClaimStatus.Verified ? "bg-primary" :
+                                                            c.Status == ClaimStatus.Approved ? "bg-success" :
+                                                            c.Status == ClaimStatus.Rejected ? "bg-danger" : "bg-secondary")">
+                                                                                                                          @c.Status
+                                                                                                                      </span>
+                                                                                                                  </td>
+                                                                                                                  <td>
+                                                                                                                      <div class="progress">
+                                                                                                                          <div class="progress-bar
+                                    @(c.Status == ClaimStatus.Submitted ? "bg-warning" :
+                                                                   c.Status == ClaimStatus.Verified ? "bg-primary" :
+                                                                   c.Status == ClaimStatus.Approved ? "bg-success" :
+                                                                   c.Status == ClaimStatus.Rejected ? "bg-danger" : "bg-secondary")"
+                             style="width:@(c.Status == ClaimStatus.Submitted ? 25 :
+                                                                                  c.Status == ClaimStatus.Verified ? 50 :
+                                                                                  c.Status == ClaimStatus.Approved ? 100 :
+                                                                                  c.Status == ClaimStatus.Rejected ? 100 : 0)%">
+                        </div>
+                    </div>
+                </td>
+                <td>
+                    @if (!string.IsNullOrEmpty(c.LecturerDocumentPath))
+                        {
+                            <a class="btn btn-sm btn-outline-primary" href="@c.LecturerDocumentPath" target="_blank">View Document</a>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No File</span>
+                        }
+                    </td>
+                    <td class="d-flex gap-2">
+                        @if (c.Status == ClaimStatus.Submitted)
+                        {
+                            <form method="post" asp-action="ApproveClaim" asp-route-id="@c.ClaimId" class="d-inline">
+                                <button class="btn btn-success btn-sm">Verify</button>
+                            </form>
+                            <form method="post" asp-action="RejectClaim" asp-route-id="@c.ClaimId" class="d-inline">
+                                <button class="btn btn-danger btn-sm">Reject</button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted">No actions</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+</div>
+
+@section Scripts {
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script>
+        $(document).ready(function () {
+            $('#statusFilter, #monthFilter').on('change', function () {
+                var status = $('#statusFilter').val();
+                var month = $('#monthFilter').val();
+                $('#claimsTable tr').each(function () {
+                    var rowStatus = $(this).data('status');
+                    var rowMonth = $(this).data('month');
+                    $(this).toggle((status === "" || rowStatus === status) &&
+                                   (month === "" || rowMonth === month));
+                });
+            });
+        });
+    </script>
+}
+
+@section Styles {
+    <style>
+        .progress {
+            height: 20px;
+        }
+
+        .progress-bar {
+            font-size: 0.85rem;
+        }
+    </style>
+}

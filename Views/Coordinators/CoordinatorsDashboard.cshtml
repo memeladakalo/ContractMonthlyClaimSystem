@@ -1,0 +1,86 @@
+﻿@model IEnumerable<ContractMonthlyClaimSystem.Models.LecturerClaim>
+
+<h2 class="mb-3">Coordinator Claim Verification</h2>
+
+@if (TempData["SuccessMessage"] != null)
+{
+    <div class="alert alert-success">@TempData["SuccessMessage"]</div>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <div class="alert alert-danger">@TempData["ErrorMessage"]</div>
+}
+@if (TempData["InfoMessage"] != null)
+{
+    <div class="alert alert-warning">@TempData["InfoMessage"]</div>
+}
+
+<table class="table table-hover table-bordered shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Claim ID</th>
+            <th>Lecturer</th>
+            <th>Total Amount</th>
+            <th>Status</th>
+            <th>Progress</th>
+            <th>Document</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        @foreach (var c in Model)
+        {
+            <tr>
+                <td>@c.ClaimId</td>
+                <td>@c.LecturerName</td>
+                <td>R @c.Total</td>
+
+                <td>
+                    <span class="
+                            badge
+                            @(c.Status == ClaimStatus.Submitted ? "bg-primary" :
+                                                    c.Status == ClaimStatus.Verified ? "bg-success" :
+                                                    c.Status == ClaimStatus.Approved ? "bg-info" :
+                                                    c.Status == ClaimStatus.Rejected ? "bg-danger" : "bg-secondary")">
+                    @c.Status
+                </span>
+            </td>
+
+                <td>
+                    @Html.Raw(c.GetProgressBarHtml())
+                </td>
+
+                <td>
+                @if (!string.IsNullOrEmpty(c.LecturerDocumentPath))
+                    {
+                        <a class="btn btn-sm btn-outline-primary" href="@c.LecturerDocumentPath" target="_blank">
+                            View Document
+                        </a>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No file</span>
+                    }
+                </td>
+
+                <td>
+                    @if (c.Status == ClaimStatus.Submitted)
+                    {
+                        <form method="post" asp-action="ApproveClaim" asp-route-id="@c.ClaimId" class="d-inline">
+                            <button class="btn btn-success btn-sm">Verify</button>
+                        </form>
+
+                        <form method="post" asp-action="RejectClaim" asp-route-id="@c.ClaimId" class="d-inline">
+                            <button class="btn btn-danger btn-sm">Reject</button>
+                        </form>
+                    }
+                    else
+                    {
+                        <span class="text-muted">No actions</span>
+                    }
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

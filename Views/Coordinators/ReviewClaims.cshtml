@@ -1,0 +1,42 @@
+﻿@model ContractMonthlyClaimSystem.Models.LecturerClaim
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="container mt-5">
+    <div class="card shadow-lg border-0">
+        <div class="card-body p-4">
+            <h2 class="mb-4">🔍 Review Claim</h2>
+
+            <dl class="row">
+                <dt class="col-sm-3">Claim ID</dt>
+                <dd class="col-sm-9">@Model.ClaimId</dd>
+
+                <dt class="col-sm-3">Description</dt>
+                <dd class="col-sm-9">@Model.Description</dd>
+
+                <dt class="col-sm-3">Amount</dt>
+                <dd class="col-sm-9">@Model.Total.ToString("C")</dd>
+
+                <dt class="col-sm-3">Status</dt>
+                <dd class="col-sm-9"><span class="badge bg-secondary">@Model.Status</span></dd>
+            </dl>
+
+            <div class="d-flex justify-content-between mt-4">
+                <form asp-action="Approve" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ClaimId" />
+                    <button type="submit" class="btn btn-success">✔ Approve</button>
+                </form>
+
+                <form asp-action="Reject" method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ClaimId" />
+                    <button type="submit" class="btn btn-danger">✖ Reject</button>
+                </form>
+
+                <a asp-action="Index" class="btn btn-secondary">⬅ Back</a>
+            </div>
+        </div>
+    </div>
+</div>
